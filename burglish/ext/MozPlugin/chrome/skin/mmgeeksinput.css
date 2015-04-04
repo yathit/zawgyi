@@ -1,0 +1,70 @@
+
+/*override default*/
+input,textarea{
+	min-height:28px;
+	vertical-align:middle;
+}
+
+/*class definitions for burglish menu*/
+.burglish_inline{
+	text-align:left;
+	float:left;
+	position:absolute;
+	background-color: #e5ecf9;
+	min-width:150;width:50%;
+	max-height:450;
+	min-height:20;
+	overflow:hidden;
+	padding:3px;
+	visibility:hidden;
+	cursor:pointer;
+	font:13px/1.6em Zawgyi-One,Arial,Sans-Serif;
+	z-index:100;
+}
+.burglish_colon{
+	float:left;
+	background-color: #d7eaf9;
+	padding:1px;
+	min-width:150;
+	border: #87CEFA solid 1px;
+}
+.burglish_coloff{
+	float:left;
+	background-color: #e5ecf9;
+	padding:1px;
+	min-width:150;
+	border: #e5ecf9 solid 1px;
+}
+.burglish_on{
+	background-color:#87CEFA;
+	min-width:150;
+}
+.burglish_off{
+	background-color:#e5ecf9;
+	min-width:150;
+}
+.burglish_tips{
+	background-color: #00FFCC;
+	padding:1px;
+	border: #87CEFA solid 1px;
+	font:13px/1.6em Zawgyi-One,Arial,Sans-Serif;
+}
+.burglish_chlist{
+	padding:5px;
+	background-color: #808080;
+	position:relative;
+}
+.burglish_chlist div {
+	background-color: #a0a0a0;
+}
+.burglish_chlist span {
+	float:left;
+	width:38px;
+	padding:1px;
+	margin:2px 3px 2px 3px;
+	background-color: #101010;
+	color:Yellow;
+	font:15px/1.8em Zawgyi-One,Arial,Sans-Serif;
+	cursor:pointer;
+	text-align:center;
+}

@@ -1,0 +1,275 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<meta name="description" lang="en" content="Next Generation Burglish Chat with Real-Time Type Ahead Burglish to Burmese Input Method">
+<meta name="Keywords" content="burglish,burmese,burmese input,burmese IME,myanglish,myanmar,myanmar language,burmese english,english burmese,myanmar english,english myanmar,chat,web chat,online chat,open source,PHP,JSON,IME,Input Method,Type Ahead,autocomplete">
+<meta name="verify-v1" content="GhQDq7ycO+gSXZNp8/Ifr6mgYkupPgU8vMefo5sAk34=">
+<title>Next Generation Burglish Chat with Real-Time Type Ahead Burglish to Burmese Input Method - Open Source </title>
+
+<link rel="stylesheet" href="css/lib.css" type="text/css">
+<link rel="stylesheet" href="css/hash.css" type="text/css">
+<link rel="stylesheet" href="css/chat.css" type="text/css">
+
+<script type="text/javascript">
+var userid="";
+var jid="";
+var curPos=0;
+var gtalkPos=0;
+var chatdata=new Object();
+var ip="";
+var dt;
+var avg;
+function onSubmit(){
+	callSendAjax(2,userid,ip,_id("words").value.filterBadWords(),curPos);
+	_id("words").value="";
+	return false;
+}
+function onChatData(_res,result,_dat,params){
+	if(_res=="OK"){
+		avg = Math.round( 1500 + (new Date()).getTime()-dt ) / 2;
+		//self.status = avg;
+		loading=false;
+		clearTimeout(timerID);
+		timerID=setTimeout("onTimer()",avg);
+		if(_dat==null) return;
+		chatdata=_dat;
+		shContent();
+	}
+}
+function shContent(){
+	var html="";
+	var data=chatdata.data;
+	for(var i=0;i < data.length;i++){
+		if(curPos < data[i].no){
+			var id=data[i].id;
+			var time=getDate(data[i].time);
+			var date = new Date();
+			var diff = date.getTime() - getDate(chatdata.servertime).getTime();
+			time = addMS(time,diff);
+			var timestr='<span style="font-size:11px;color:#a9a9a9;">' + getDay(time)+" "+time.getHours()+":"+time.getMinutes()+"<\/span> ";
+			id=id ? "&lt;"+id+"&gt;" : "";
+			html +=timestr+id+data[i].data.htmlSpecialChars().loadSmileys().filterBadWords()+" <br>";
+			if(i==data.length - 1) curPos=data[i].no;
+		}
+	}
+	//gtalk data
+	var data=chatdata.gtalkdata;
+	for(var i=0;i < data.length;i++){
+		if(gtalkPos==0) gtalkPos=data[data.length-1].no;
+		if(gtalkPos < data[i].no){
+			var id=data[i].id;
+			var time=getDate(data[i].time);
+			var date = new Date();
+			var diff = date.getTime() - getDate(chatdata.servertime).getTime();
+			time = addMS(time,diff);
+			var timestr='<span style="font-size:11px;color:#a9a9a9;">' + getDay(time)+" "+time.getHours()+":"+time.getMinutes()+"<\/span> ";
+			id=id ? "&lt;"+id+"&gt;" : "";
+			html +=timestr+id+data[i].data.htmlSpecialChars().loadSmileys().filterBadWords()+" <br>";
+			if(i==data.length - 1) gtalkPos=data[i].no;
+		}
+	}
+
+	//userlist related
+	var userlist=chatdata.user;
+	var tmpuser ={"0":[],"1":[],"2":[],"3":[]};
+	for(var i=0;i < userlist.length;i++){
+		tmpuser[ userlist[i][2] ][ tmpuser[userlist[i][2]].length ] = userlist[i];
+	}
+	
+	//userlist from gtalk
+	var gtalktime=getDate(chatdata.servertime).getTime() - getDate(chatdata.gtalktime).getTime();
+	if(gtalktime<1000*60){
+		userlist = chatdata.gtalkuser;
+		for(var i=0;i < userlist.length;i++){
+			tmpuser[ userlist[i][2] ][ tmpuser[userlist[i][2]].length ] = userlist[i];
+		}
+	}
+
+	var userhtml=" <b>User Lists...<\/b><br>";
+	for(var j in tmpuser){
+		userlist = tmpuser[j];
+		for(var i=0;i < userlist.length;i++){
+			if(!/[^\d\w@\.\[\]]+/.test(userlist[i][0])){
+				userhtml +='<div><img src="'+ statusIcon.base+"/"+statusIcon.img[userlist[i][2]]+'.gif" alt="">'+ cutStr(userlist[i][0],15) + (userlist[i][3]==1?"[Gtalk]":"") +"("+statusIcon.alt[userlist[i][2]] +')<\/div>';
+			}
+		}
+	}
+	_id("userlist").innerHTML=userhtml;
+
+	if(html){
+		var content=_id("cont");
+		html = content.innerHTML + html;
+		var split = html.split("<br>");
+		if(split.length>30) {
+			html = "";
+			for(var i =split.length-40; i < split.length ; i++){
+				if(split[i]!="") html += split[i] + "<br>";
+			}
+		}
+		content.innerHTML =html;
+		content.scrollTop=content.scrollHeight - content.clientHeight;
+	}
+};
+var loading=false;
+var timerID=0;
+function onTimer(){
+	if(!loading){
+		loading=true;
+		dt = (new Date()).getTime();
+		callSendAjax(2,userid,curPos,"",curPos);
+	}
+}
+
+function reloadSmileys(){
+	var chk = _id("x_SmileysBlock").getElementsByTagName("INPUT");
+	var html="";
+	for(var j=0;j<_smileys.length;j++){
+		if(chk[j].checked){
+			var smileys = _smileys[j];
+			for(var i=0;i < smileys.img.length;i++){
+				var code=smileys.code[i].htmlSpecialChars();
+				html +='<img src="'+ smileys.base +'/'+smileys.img[i]+'.gif" alt="'+code+'" title="'+(smileys.alt ? smileys.alt[i]+' - ' : '')+code +'" onclick=insertSmiley("'+(_o[_o.x].imgtag?(smileys.base+'/'+smileys.img[i]+'.gif'):code)+'");>';
+			}
+		}
+	}
+	_id("x_Smileys").innerHTML=html;
+}
+
+var smileysLoaded=false;
+function shSmileys(){
+	if(!smileysLoaded){
+		reloadSmileys();
+		smileysLoaded=true;
+	}
+	var _v=_id("x_SmileysBlock").visible;
+	_activate("x_SmileysBlock",_v);
+	_id("btnSmiley").value=_v?"Smileys >>>":"Smileys <<<";
+}
+
+function shDetails(){
+	var _v=_id("details").visible;
+	_activate("details",_v);
+	_id("btnDetail").value=_v?"Details >>>":"Details <<<";
+}
+function shVer(){
+	var _v=_id("version").visible;
+	_activate("version",_v);
+	_id("btnVer").value=_v?"Version Info >>>":"Version Info <<<";
+}
+function shHelp(){
+	var _v=_id("help").visible;
+	_activate("help",_v);
+	_id("btnHelp").value=_v?"Help >>>":"Help <<<";
+}
+function insertSmiley(s){
+	_Wrap(_id("words"), (_o[_o.x].imgtag?'<img src="'+s+'" \/>':s));
+};
+function onLogin(){
+	var value = _id("x_usr").value;
+	if(/[^\d\w\.]+/.test(value)){
+		alert("Nickname should not contain characters other than A-Za-z0-9_.");
+		onLoad();
+	}else if(value.length < 6 || value.length > 30){
+		alert("Nickname must be 6 to 30 characters length");
+		onLoad();
+	}else{
+		var params=new Object();
+		params["user"]=value;
+		params["pass"]=_id("x_pass").value;
+		SendAjax(1,params,onLoggedin,"","confbot/auth.php");
+	}
+}
+function onLoggedin(response,result,data,params){
+	if(response=="OK"){
+		_deactivate("cover");
+		_deactivate("lbox");
+		userid=_id("x_usr").value;
+		_id("handle").value=userid;
+		_id("words").focus();
+		onTimer();
+	}else{
+		_id("x_usr").focus();
+		_id("x_usr").value = _id("x_pass").value = "";
+		alert("Invalid username or password, please retry again.");
+	}
+}
+
+var loadTimerID=0;
+function onLoad(){
+	//var _tag = document.getElementsByTagName("DIV");for (var i=0; i<_tag.length; i++) if (_tag[i].style.zIndex == 99999) _tag[i].innerHTML = "";
+	_id("divtag").innerHTML = burglish_version;
+	_id("x_usr").focus();
+	_deactivate("details");
+	_deactivate("x_SmileysBlock");
+	_deactivate("help");
+	_id("x_usr").focus();
+};
+
+function onLoad2(){
+	initTextarea({id: "words",className: "chatbox",multiline : false,toburmese : true,self:true, rows:1, imgtag:true});
+}
+
+</script>
+</head>
+<body onload='loadjs("ajax lib burglish burmese chat",onLoad2)'>
+	<noscript><div style="z-index:99999;color:#ffffff;background-color:#ff0000;position:absolute;top:0;left:0;width:100%;text-align: center;vertical-align:middle;">You really, really need to enable JavaScript to view this page. You know, it's written in JavaScript. And it will make your life much easier, but it's up to you.</div></noscript>
+	<center>
+		<div class="header"><b>Next Generation Burglish Chat with Real-Time Type Ahead Burglish to Burmese Input Method - v<span id="divtag"></span></b></div>
+		[ mmchatroom@mmchatroom.com ] (gtalk conference chat)
+	</center>
+	<div class="main" style="background-color: #003366;border: 1px solid #ffffff;">
+		<center><script type="text/javascript">google_ad_client="pub-8249396974682845";google_ad_width=728;google_ad_height=15;google_ad_format="728x15_0ads_al_s";google_ad_channel="";google_color_border="6699CC";google_color_bg="003366";google_color_link="FFFFFF";google_color_text="AECCEB";google_color_url="AECCEB";</script><script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script></center>
+	</div>
+	<!--div id="cover"></div>
+	<div id="lbox">
+		<div id="ltbox">
+			<input id="x_usr" class="ltxt" /><br>
+			<input type="password" id="x_pass" class="ltxt" /><br>
+			<input type="button" value="login" class="lbtn" onclick="onLogin()" />
+		</div>
+	</div-->
+	<form onsubmit="return onSubmit();" action="">
+	<div class="main">
+		<div>
+			<div id="cont"></div>
+			<div id="userlist" class="online"></div>
+		</div>
+		<div id="inputs">
+			<span id="chatbox"><textarea id="words" cols="60" rows="10"></textarea></span>
+			<div id="x_cmd">
+				<input class="submitbtn" id="handle" type="button">&nbsp;<input class="submitbtn" type="submit" value="Send(Ctrl+Enter,Enter)" onclick="onSubmit();">&nbsp;<input id="btnSmiley" class="submitbtn" type="button" value="Smileys >>>" onclick="shSmileys()">&nbsp;<input id="btnDetail" class="submitbtn" type="button" value="Details >>>" onclick="shDetails()">&nbsp;<input id="btnVer" class="submitbtn" type="button" value="Version Info >>>" onclick="shVer()">&nbsp;<input id="btnHelp" class="submitbtn" type="button" value="Help >>>" onclick="shHelp()">&nbsp;<input id="btnLogout" class="submitbtn" type="button" value="Log Out" onclick="javascript:location.href=location.href;">&nbsp;
+			</div>
+			<div id="x_SmileysBlock" style="display:none;">
+				<input type="checkbox" onclick="reloadSmileys()" /> Yahoo!(1) <input type="checkbox" onclick="reloadSmileys()" /> Yahoo!(2) <input type="checkbox" onclick="reloadSmileys()" /> MSN <input type="checkbox" onclick="reloadSmileys()" /> Others <br>
+				<div id="x_Smileys"></div>
+			</div>
+		</div>
+		<div id="details" class="detail" style="display:none;">
+			    - Supported Browsers : Firefox 1.5+,SeaMonkey1.0.0+,Other Mozilla Latest Versions,IE 6+,Netspace 7.1+,Safari Win(3.0+) (Javascript &amp; ActiveX(for AJAX)must be Enabled)<br> - Help : <br> -> Selection : <b>Space bar</b> or <b>Up/Down</b> k e y s to select each word in Menu Enabled Mode,<br> -> Convertion : <b>Tab</b>, <b>Enter</b>, <b>Right Arrow</b> or <b>0-9</b> k e y to convert to a certain word,<br> -> Pali(Pat Sint)Words : Type <b>Capital</b> Letter for Patsints (e.g. bode <b>D</b>a for ဗုဒၶ, ta nin <b>Lar</b> for တနလၤာ ) <br> - Fonts : Zawgyi Related <br> - Font Embedding Enabled in Internet Exporer. If you are using Firefox/Netscape(<a href="#" onclick="window.open('download/zawgyi.zip');">Download Font</a>)<-- Save and extract zip file and copy to Windows Fonts Folder. <br> - Download Source Codes <a href="#" onclick="window.open('download/burglish.tar.gz');">burglish.tar.gz(latest standalone version)</a><br>
+		</div>
+		<div id="version" class="detail" style="display:none;">
+			 <!--<b>Versions Info</b><br>v1.2.1.080114<br>- Burglish Menu follow cursor on IE<br><br>v1.1.5.071210<br>- Word generator can now generate Vowel only words like အ၊ အာ၊ အိ၊ အီ၊ အု၊ အူ၊ အံ၊ အား၊ စသည္<br><br>v1.1.2.071207<br>- This is Bug Fixed release<br><br>v1.1.0.071206<br>- Multiple Column Menus<br>- Tips added<br>- Version System a bit changed.<br><br>v1.0.0.1.070925<br>- wa lone(ဝ) and thone nya (၀) is differentiated now<br>- Some words added / some bugs fixed<br><br>v0.9.9.9.070827<br>- Tab key and Right arrow key is now word selecting keys (Thanks to man.shrek)<br>- Some words added / some bugs fixed<br><br>v0.9.9.8.070820<br>- Some new word / patterns added<br>- Some bugs fixed<br><br>v0.9.9.7.070811<br>- Lots of bugs fixed<br>- Most of the words (burmese, Pali) can type now.<br><br>v0.9.9.6.070806<br>- add new typing system for a that(အသတ္) (type <b>f</b> for --္) and sf, bf, chf  for (စ္ ဘ္ ခ်္)<br>- Some Words add like က်္ာ က်္ား and some others<br><br>v0.9.9.5.070806<br>- Some bugs fixed for Internet Explorer.<br>- Some Words added<br><br>v0.9.9.4.070803<br>- New Typing System introduced (you can type without typing space in most cases.  , for example, just type myanmar for ျမန္မာ)<br>- Some Words added<br><br>v0.9.9.3.070731<br>- Log Out button added<br>- Some bugs fixed<br>- Gtalk status msg added<br><br>v0.9.9.2.070729<br>- Chat can only login with Gtalk Account<br>- Some bugs fixed<br><br>v0.9.8.0.070708<br>- Burglish, Burmese Indicator added<br>- some bugs fixed<br><br>v0.9.7.0.070707<br>- Happy Lucky 7 day! 2007 07 07<br>- some changes in chat<br>- some bugs fixed<br><br>v0.9.6.0.070701<br>- ပုဒ္ကေလး၊ပုဒ္မ introduced with , and .<br><br>v0.9.5.0.070701<br> - Menu appearance improvement<br> - Some Bugs Fixed<br><br>v0.9.2.0.070630<br> - Rearranged word generating system<br> - Some Bugs Fixed<br><br>v0.9.1.5.070627<br> - Word filtering introduces in Chat System<br> - F2 K e y to change Input Menu On / Off.<br><br>v0.9.0000(24 Jun. 2007)<br> - Pali Input Improvement <br> - Burmese Input Improvement <br> - Various Bug fixed <br> - Almost ready to be released<br><br>v0.8.0000(22 Jun. 2007)<br> - Pali Input Improvement (e.g. bode <b>D</b>a for ဗုဒၶ, ta nin <b>Lar</b> for တနလၤာ, ein <b>Dray</b> for ဣေျႏၵ  ) <br> - Most of the Pat Sints available now<br> - some bugs fixed (still finding somethings)<br><br> v0.7.0000(17 Jun. 2007)<br> - Minor Design Changes<br> - Pali Character Input Introduced(e.g. bode <b>D</b>a for ဗုဒၶ<br><br> v0.6.4000(25 Mar. 2007)<br> - K e y mapping changes - <br> - ><b>Ctrl</b> k e y for On/Off converting <br> - ><b>0-9</b> k e y for direct converting in Menu Enabled Mode(Thanks to Ko Wai Phyo Lin(China))<br> - smileys are not shown by default <br> - more faster than before <br> - files more compact than before <br><br> v0.6.3000(25 Feb. 2007)<br> - Some Security Related items fixed on nickname string. <br><br> v0.6.2000(29 Jan. 2007 early morning!)<br> - Numeric system added! :)<br> - for example,12345 into burmese ၁၂၃၄၅၆၇၈... and တစ္ကုေဋႏွစ္သန္းသံုးသိန္းေလးေသာင္းငါးေထာင့္ေျခာက္ရာ့ခုႏွစ္ဆယ့္ရွစ္ . :)<br> - Not Available for Big Numbers yet<br><br> v0.6.1000(28 Jan. 2007)<br> - Bug Fixes <br><br> v0.6.0000(27 Jan. 2007)<br> - From Version 0.6.0000,program knows the spelling of burmese. <img src="images/smileys/13.gif" /><br> - now Dictionary+Generated words <img src="images/smileys/4.gif" /><br> - The following are the Main Features of the New system.<br><ul><li>the words not in known dictionaries can also be populated. like "la gun/gwun ein"လဂြမ္းအိမ္, gun/gwun ဂြမ္း are unknowns and,</li><li>unknown words show -gwun- , you may notice 2 minus beside gwun - -</li><li>support various burmese input by burmese people. like kel ခဲဲ, k` ခဲ့ , kal, ခယ္, me မဲ, m` မဲ့ easily.</li><li>once I add "mya" ျမ , the program automatically know "myan" ျမန္, "myin"ျမင္း,"myo"ျမိဳ, "myoh"ျမိဳ႕, "myoe" မ်ိဳး, "myal" ျမဲ, etc..........</li><li>you can even type irregular words now like ေဗ်းဗ်ိဳးဗ်စ္ဗ်ဲဗ်ည္းဗ်န္းေဗ်ာင္း <img src="images/smileys/10.gif" /></li><li>usage of yay cha, maut cha ကာ ခါ change automatically. </li></ul><br> v0.5.1000(23 Jan. 2007)<br> - Database Update and some changed,remove unrelated English words,some Countries <br>(This feature will be enabled again in future release,after developing multiple dictionaries input):).<br> - Burmese Kindergarden Chapter 1~7 added(Next Release will be add 7~14 chapters).<br> - Here is some screen shots<br><br><img src="images/grammar/ch1.jpg" /> &nbsp;<img src="images/grammar/ch2.jpg" /> &nbsp;<img src="images/grammar/ch3.jpg" /> &nbsp;<img src="images/grammar/ch4.jpg" /> &nbsp;<img src="images/grammar/ch5.jpg" /><br> &nbsp;<img src="images/grammar/ch6.jpg" /> &nbsp;<img src="images/grammar/ch7.jpg" /><br><br> v0.4.5000(22 Jan. 2007)<br> - Menu Logic is changed. You will need only your computer browser to see my Menu Input System(move everything into javascript/AJAX):)<br> - AJAX Speed problems fixed(Some people cannot see menu before because of the Speed problem).<br> - here is the sample i ran the "chat.htm" in my local computer firefox.<br> &nbsp;<img src="images/menu.jpg" /><br> - download version 0.4.5(<a href="download/burglish-0.4.5000.zip">here</a>). Only 41.1kb :)<br><br> v0.4.1000(21 Jan. 2007)<br> - Menu's K e y System changed. Now same style with Microsoft(R)IME(Input Method Editor)like Japanese,Chinese IME.<br> - Add Users' status,Available,Idle,Offline<br> - Turning off the Autoupdating database for Speed problems.<br><br> v0.3.0000(15 Jan. 2007)<br> - Userlist added in the test phase.<br><br> v0.2.9000(13 Jan. 2007)<br> - Menu items are more accurate values than previous versions.<br><br> v0.2.8000(12 Jan. 2007)<br> - Ambiguous Input available now(like "san"<br>for("salone/salain","na that/ma that",with "witsapaut" or not))<br> - Best Choosing Method will be available in the near future with some AI<br>functions.<br><br> v0.2.6000(26 Nov. 2006)<br> - Some Bug Fixes<br><br> v0.2.5000(11 Nov. 2006)<br> - Opening the source codes to download(<a href="download/burglish.zip">latest download here</a>).<br> - PHP and PHP-JSON extension will be need and all the .txt files should be 777 full access.<br><br> v0.2.1000(10 Nov. 2006)<br> - Database automatically update 20 seconds using AJAX requests,so you dont even need to refresh for new queries. <br> - Compact all javascript and stylesheet files. <br> - Change layout a little.<br> - Font embedding enabled,you'll no longer need font in the Internet Explorer. <br><br> v0.1.0000(10 Aug. 2006)<br> - Start of this Project<br>-->
+		</div>
+		<div id="help" class="detail" style="display:none;">
+			<center><table style="text-align:left;"><tr><td style="padding:10px;"><br><b>ဥပမာ စာေၾကာင္းမ်ား</b><br><br>၁။ မဂၤလာပါ။ ေနေကာင္းၾကပါသလားရွင္/ဗ်ာ။<br>    min Ga lar par. nay kg kya par tha larr shin / byar.<br><br>၂။ အရွင္ဆႏၵာဓိက၏ ႏို႕ႏွစ္လုံးဖိုး ေက်ပါတယ္ စာအုပ္မွ ေကာက္ႏႈတ္ခ်က္<br>    a shin san Dar di ka ei  noh 2 lone phoe kyay par tal mha kout nhote chat<br><br>-  ေႏြးေထြးေမတၱာ တံု႕ျပန္စာ<br>   nway htway mit Tar toant pyan sar<br><br>- စိတ္သန္႕သန္႕ေလးထား တတ္သူ<br>  sate thant thant layy htarr tat thu<br><br>- ရဟႏၲာႏွင့္ အ႐ိုးကြင္းဆက္<br>  ya han Tar , a yoe kwin sak<br><br>- ပေစၥကဗုဒၶါ<br>  pis Say ka vode Dar<br><br>- ဧဟိဘိကၡဳ ရဟန္းႏွင့္ ေခါင္းရိတ္ဆံခ်ျခင္း<br>  ay hi bake Khu ya hann , khaung yate san cha chin<br><br>- သိကၡာခ်ရင္ ငိုခ်င္တယ္<br>  thake Khar cha yin ngo chin tal<br><br>- ျမင့္ျမတ္ေသာ ဥပကၡာ<br> myint myat thaw u pak Khar<br><br>- ႏွလုံးသား မိတၱဴ<br>  nha lone thar mate Tu<br><br></td></tr></table></center><br>
+			<center><table><tr><th>------စာလံုးဇယား(ဗ်ည္းမ်ား)-------</th><th>--------ရိုက္ပံုရိုက္နည္း-------</th></tr><tr><th>--------------------------------</th><th>--ကြင္းထဲမွ စာလံုးသည္ တိုက္ရိုက္ ရိုက္သြင္းနည္း---</th></tr><tr><td>က</td><td>k</td></tr><tr><td>ခ</td><td>kh</td></tr><tr><td>ဂ ဃ</td><td>g (gg)</td></tr><tr><td>င</td><td>ng</td></tr><tr><td>စ ဆ</td><td>s (hs, ss)</td></tr><tr><td>ဇ စ်</td><td>z (zz)</td></tr><tr><td>ည</td><td>ny</td></tr><tr><td>တ ဋ </td><td>t (tt)</td></tr><tr><td>ထ ဌ</td><td>ht (htt)</td></tr><tr><td>ဒ ဓ</td><td>d (dd)</td></tr><tr><td>ဍ ဎ</td><td>hd (hdd)</td></tr><tr><td>န ဏ</td><td>n (nn)</td></tr><tr><td>ပ </td><td>p</td></tr><tr><td>ဖ</td><td>ph, f</td></tr><tr><td>ဘ ဗ</td><td>b (bb)</td></tr><tr><td>မ</td><td>m</td></tr><tr><td>ရ ယ</td><td>y (yy)</td></tr><tr><td>လ ဠ</td><td>l (ll)</td></tr><tr><td>၀</td><td>w</td></tr><tr><td>သ</td><td>th</td></tr><tr><td>ဟ</td><td>h</td></tr><tr><td>အ</td><td>a</td></tr><tr><th>-----ဥပမာ စာလံုးမ်ား-----</th><th>----ဥပမာ ရိုက္ပံုရိုက္နည္းနမူနာ-----</th></tr><tr><th>------------------------------</th><th>------------------------------</th></tr><tr><th>------ပံုမွန္စာလံုးမ်ား-----</th><th>----ရိုက္ပံုရိုက္နည္းနမူနာ-----</th></tr><tr><td>က ကာ ကား</td><td>ka kar kar</td></tr><tr><td>နိ နီ နီး</td><td>ni ne nee</td></tr><tr><td>ခု ခူ ခူး</td><td>khu khu khuu</td></tr><tr><td>ေပ ေပ့ ေပး</td><td>pay pay pay</td></tr><tr><td>ဆဲ ဆဲ့ ဆယ္</td><td>sel sel sel (sal sal sal)</td></tr><tr><td>ေခါ ေခါ့ ေခၚ</td><td>khaw khaw khaw</td></tr><tr><td>ငန္ ငန္႕ ငန္း, ငံ ငံ့</td><td>ngan ngant ngan, ngan ngant</td></tr><tr><td>ေတာ ေတာ့ ေတာ္</td><td>taw taw taw</td></tr><tr><td>မို မို႕ မိုး</td><td>mo moh moe</td></tr><tr><td>က် က်ာ က်ား</td><td>kya kyar kyar</td></tr><tr><td>က်ိ က်ဳ ေက် </td><td>kyi kyu kyay</td></tr><tr><td>က်ဲ ေက်ာ က်ိဳ</td><td>kyal kyaw kyo</td></tr><tr><td>ကြ ကြာ ကြား</td><td>kwa kwar kwar</td></tr><tr><td>ေကြ ကြၽ ကြယ္</td><td>kway kwel kwal</td></tr><tr><td>ငွ ငွာ ငွား</td><td>nha nhar nhar</td></tr><tr><td>မွ ရွ </td><td>mha sha</td></tr><tr><td>မွိဳ ရွိဳ</td><td>mho sho</td></tr><tr><td>ေကြၽး ကြၽဲ ေျမြ</td><td>kyway kywal mway</td></tr><tr><td>ျဖ ျဖဴ ျဖိဳး</td><td>phya phyu phyoe</td></tr><tr><td>မွ် မွ်ား</td><td>mhya mhyar</td></tr><tr><td>ေမွ်ာ့ ေမွ်ာ္</td><td>mhyaw mhyaw</td></tr><tr><td>ျမႇဴ ေျမႇး</td><td>mhyu mhyay</td></tr><tr><td>လႊ ေမႊ႕ ေရႊ႕</td><td>lwa mway shway</td></tr><tr><td>ဘိုင္ ဘိုင့္ ဘိုင္း</td><td>by by bye</td></tr><tr><td>မြန္ မြန္႔ မြန္း</td><td>mon mont moon</td></tr><tr><td>ရာယ္ ပါယ္</td><td>yarl parl</td></tr><tr><td>မာန္ ဒါဏ္ ဉာဏ္</td><td>marn darn nyarn</td></tr><tr><td>ၾတိ တ်ာ ၾဆာ</td><td>tri tyar syar</td></tr><tr><th>--------ပါဠ္ဆင့္မ်ား-------</th><th>----စာလံုးအၾကီးျဖင့္ရိုက္ပါ----</th></tr><tr><td>တကၠသိုလ္</td><td>tak Ka thol</td></tr><tr><td>တနလၤာ</td><td>ta nin Lar</td></tr><tr><td>ဣေျႏၵ</td><td>ein Dray</td></tr><tr><td>ဗုဒၶ</td><td>bode Da</td></tr><tr><td>အကႌ်</td><td>in Kyi</td></tr><tr><td>ေဗာဇၥ်င္သုတ္</td><td>booz Zin thote</td></tr><tr><td>ပိ႑ိ</td><td>pain Di</td></tr><tr><th>--------အျခား-------</th><th>--------ရိုက္ပံုရိုက္နည္း-------</th></tr><tr><td>ပုဒ္ကေလး ၊ ပုဒ္မ ။</td><td>ပုဒ္ကေလး , ပုဒ္မ .</td></tr><tr><td>၀စၥေပါက္ း ေအာက္ကျမစ္ -.</td><td>၀စၥေပါက္ ;  ေအာက္ကျမစ္  h</td></tr><tr><td>အသတ္ --္ </td><td>အသတ္ f</td></tr><tr><th>---ပံုမွန္မဟုတ္ေသာရိုက္ကြက္မ်ား----</th><th>--------ရိုက္ပံုရိုက္နည္း-------</th></tr><tr><td>ခဲ့</td><td>k` , ke`, ka`</td></tr><tr><td>ဘာ ပါ</td><td>br, pr</td></tr><tr><td>ေမာင္ ေစာင္</td><td>mg, sg</td></tr><tr><td>စ္ က္ မ္ ဂ္ ဘ္ ခ်္</td><td>sf kf mf gf bf chf</td></tr></table></center>
+		</div>
+	</div>
+	</form>
+	<center>
+		<div style="height:100px;">
+			<script type="text/javascript">google_ad_client = "pub-8249396974682845";google_ad_width = 180;google_ad_height = 60;google_ad_format = "180x60_as_rimg";google_cpa_choice = "CAEQ24Oy0QEaCE6R3bwT7iEqKMu293M";</script><script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>&nbsp;&nbsp;
+			<script type="text/javascript">google_ad_client = "pub-8249396974682845";google_ad_width = 468;google_ad_height = 60;google_ad_format = "468x60_as";google_cpa_choice = "CAEQoIalhAIaCBgyWWGxiTI_KMzZ1I4B";</script><script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script>&nbsp;&nbsp;
+			<script type="text/javascript">google_ad_client = "pub-8249396974682845";google_ad_width = 180;google_ad_height = 60;google_ad_format = "180x60_as_rimg";google_cpa_choice = "CAEQoPi39gEaCHUqD1wasrJHKMzD4IEB";</script><script type="text/javascript" src="http://pagead2.googlesyndication.com/pagead/show_ads.js"></script><br>
+
+			<a href="http://www.burglish.com">2007 @ Burglish.com</a><br>
+			
+			<a href="http://www.mmgeeks.org">2007 @ MMGeeks.org</a><br>
+		</div>
+		<script src="http://www.google-analytics.com/urchin.js" type="text/javascript"></script><script type="text/javascript">_uacct = "UA-803639-1";urchinTracker();</script>
+	</center>
+	
+	<script src="js/basic.js" type="text/javascript"></script>
+</body>
+</html>

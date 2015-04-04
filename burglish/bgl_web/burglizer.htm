@@ -1,0 +1,64 @@
+<html>
+<head>
+<title>Burglizer - Burmese to Burglish For Research and Development of Romanization</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<link rel="stylesheet" href="css/lib.css" type="text/css" >
+<link rel="stylesheet" href="css/hash.css" type="text/css" >
+
+<script type="text/javascript">
+
+function convert(){
+	var source = _id("sourceText");
+	var dest = _id("destText");
+
+	var srcData = source.value;
+	if(font["source"].name!=font["dest"].name){
+			srcData = srcData.convertFont(font["source"].name,"Zawgyi_One");
+	}
+	
+	var destData = srcData.bnormalize().burglize();
+	
+	if(font["source"].name!=font["dest"].name){
+		destData = destData.convertFont("Zawgyi_One",font["dest"].name);
+	};
+	dest.value = destData;
+	return false;
+}
+
+function onLoad(){
+	_id('sourcetag').innerHTML=getFontList("source");
+	_id('desttag').innerHTML = getFontList("dest");
+
+	changeFont(_id("source"), "Zawgyi-One");
+	changeFont(_id("dest"), "Zawgyi-One");
+	b2bc();
+	_hide("loading");
+}
+
+</script>
+</head>
+<body onload='loadjs("ajax,lib,int,burglish,burmese,language",onLoad)'>
+<noscript><div style="z-index:99999;color:#ffffff;background-color:#ff0000;position:absolute;top:0;left:0;width:100%;text-align: center;vertical-align:middle;">You really, really need to enable JavaScript to view this page. You know, it's written in JavaScript. And it will make your life much easier, but it's up to you.</div></noscript>
+<div id="loading" style="visibility:visible;z-index:1000;color:#ffffff;background-color:#ff0000;position:absolute;top:0;left:90%;width:10%;text-align: center;vertical-align:middle;">Loading...</div>
+<h1>:: Burglizer ::</h1>
+<form>
+<center>
+<table width="90%">
+<tr><td width="50%"><div id="sourcetag"></div></td>
+<td width="50%"><div id="desttag"></div></td></tr>
+<tr><td>	<div id="sourceArea"></div></td><td>	<div id="destArea"></div></td></tr>
+</table>
+<input type="button" onclick="return convert();" value="Burglize ->" />
+</center>
+</form>
+<div class="section" id="usages">
+	<b>Versions Info</b><br>v0.1.0.071210<br>- Start of this project.<br>
+</div>
+
+<center><br><a href="http://www.burglish.com">2007 @ Burglish.com</a><br><a href="http://www.mmgeeks.org">2007 @ MMGeeks.org</a></center>
+
+<script src="js/basic.js" type="text/javascript"></script>
+
+</body>
+</html>

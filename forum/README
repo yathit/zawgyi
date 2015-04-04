@@ -1,0 +1,26 @@
+Overview.
+=========
+
+Myanmar Forum that run on Google Cloud Server based on fofou open source project.
+For more info: http://blog.kowalczyk.info/software/fofou/
+
+Installation.
+=============
+
+Fofou runs on Google App Engine infrastructure. You need to get App Engine
+account and upload ZawGyi Forum (see
+http://code.google.com/appengine/docs/gettingstarted/uploading.html for
+details).
+
+Once installed, you can create one or more forums through web interface.
+
+
+License.
+========
+
+ZawGyi Forum is release on GNU General Public License v2 available at
+zawgyi.googlecode.com.
+
+
+
+

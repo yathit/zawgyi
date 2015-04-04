@@ -1,0 +1,26 @@
+//////////////////////////////////////////////////////////////////////
+//
+//  THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF
+//  ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+//  TO THE IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
+//  PARTICULAR PURPOSE.
+//
+//  Copyright (C) 2003  Microsoft Corporation.  All rights reserved.
+//
+//  TextService.rc
+//
+//          Resources.
+//
+//////////////////////////////////////////////////////////////////////
+
+//
+// Bitmap resources
+//
+IDB_SELECT		  BITMAP		"../bgl_res/select.bmp"
+IDB_BK			  BITMAP		"../bgl_res/BK.bmp"
+
+//
+// Icon resources
+//
+IDI_TEXTSERVICE		ICON		"../bgl_res/Burglish2.ico"
+

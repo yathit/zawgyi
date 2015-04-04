@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+
+<overlay id="mmgeeksOverlay"
+				 xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+				 
+	<script type="application/x-javascript" src="chrome://global/content/nsUserSettings.js" />
+	<script type="application/x-javascript" src="chrome://mmgeeksinput/content/MMGeeksPreferencesUtil.js" />
+	<script type="application/x-javascript" src="chrome://mmgeeksinput/content/basic.js" />
+	<script type="application/x-javascript" src="chrome://mmgeeksinput/content/lib.js" />
+	<script type="application/x-javascript" src="chrome://mmgeeksinput/content/burglish.js" />
+	<script type="application/x-javascript" src="chrome://mmgeeksinput/content/burmese.js" />
+	<script type="application/x-javascript" src="chrome://mmgeeksinput/content/MMGeeks.js" />   
+   
+	<keyset id="mainKeyset">
+		<key id="key_mmgeeks_burglish" keycode="VK_F8" modifiers="" oncommand="mmgeeks.switchTypeMode();"/>
+	</keyset>
+
+	<popup id="contentAreaContextMenu">
+	    <menuseparator />
+	    <menu id="mmgeeks_popup_menu" label="Burmese Input System" class="menu-iconic" image="chrome://mmgeeksinput/skin/mmgeeks_status_icon.png" >
+	        <menupopup id="mmgeeks-context-items" onpopupshowing="mmgeeks.updatePopup();" >
+       	       <menuitem id="burglish_chkb_popup" label="Burglish" oncommand="mmgeeks.checkBurglish('popup');" type="checkbox"/>
+       	       <menuitem id="burmese_chkb_popup" label="Burmese" oncommand="mmgeeks.checkBurmese('popup');"  type="checkbox"/>       	       
+       	       <menuitem id="showtips_chkb_popup" label="Showtips" oncommand="mmgeeks.checkShowTips('popup');" type="checkbox"/>
+    	          <menuitem id="charlist_chkb_popup" label="Characters List" oncommand="mmgeeks.checkCharList('popup');" />	
+	        </menupopup>
+	    </menu>
+	</popup>
+    
+	<statusbar id="status-bar">		
+		<statusbarpanel id="mmgeeks_panel" 
+						class="statusbarpanel-menu-iconic" 
+						src="chrome://mmgeeksinput/skin/mmgeeks_status_icon.png"
+					    collapsed="false"
+					    insertafter="statusbarpanel-progress"
+					    persist="collapsed"
+					    tooltiptext="Burmese Input System">
+         			
+			<menupopup orient="horizontal" position="before_start" onpopupshowing="mmgeeks.updateMenu();">
+    	       <menuitem id="burglish_chkb_menu" label="Burglish" oncommand="mmgeeks.checkBurglish('menu');" type="checkbox"/>
+    	       <menuitem id="burmese_chkb_menu" label="Burmese" oncommand="mmgeeks.checkBurmese('menu');"  type="checkbox"/>       	       
+    	       <menuitem id="showtips_chkb_menu" label="Showtips" oncommand="mmgeeks.checkShowTips('menu');" type="checkbox"/>
+    	       <menuitem id="charlist_chkb_menu" label="Characters List" oncommand="mmgeeks.checkCharList('menu');" type="checkbox"/>	
+			</menupopup>
+			<label id="mmgeeks_status_label" value="" />
+		</statusbarpanel>
+
+	</statusbar>
+
+</overlay>
+

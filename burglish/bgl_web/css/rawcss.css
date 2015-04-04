@@ -1,0 +1,19 @@
+﻿.numeric{
+	text-align: right;
+}
+h2{
+	padding-top: 0px;
+	padding-left: 4pt;
+	margin-top: 0px;
+	border-left: 10px black solid;
+}
+.noborder{
+     border:0;
+     margin:0;
+     padding:0;
+}
+input{
+	/*border: #87CEFA solid 1px;
+	background-color: #cccccc;*/
+	vertical-align:middle;
+}

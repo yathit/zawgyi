@@ -1,0 +1,21 @@
+##Burglish Demo Text Pad. 2008##
+
+-Standalone client  (Remaking of Burglish TestArea)
+
+
+To compile the application
+
+Choose:
+Program->Visual Studio 200X -> Visual Studio 200X Command Prompt
+
+At command line
+C:\<project dir>\> nmake
+
+To run
+C:\<project dir>\> blg_textpad.exe
+
+--
+
+This program is Free, Open Source, and Redistributable under GPLv2 License. 
+According to GPLv2 license, sub project that using GPLv.2 license should also be open-source one.
+If not, you might need commercial license with us.

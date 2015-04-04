@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test.csproj", "{D30D85A9-CAD0-4173-971C-F389FA56B7C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BurglishControls", "..\BurglishControls\BurglishControls.csproj", "{523464A5-63BB-4A83-A0C0-109CB4DEEA97}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|.NET = Debug|.NET
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Release|.NET = Release|.NET
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D30D85A9-CAD0-4173-971C-F389FA56B7C9}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{D30D85A9-CAD0-4173-971C-F389FA56B7C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D30D85A9-CAD0-4173-971C-F389FA56B7C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D30D85A9-CAD0-4173-971C-F389FA56B7C9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D30D85A9-CAD0-4173-971C-F389FA56B7C9}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D30D85A9-CAD0-4173-971C-F389FA56B7C9}.Release|.NET.ActiveCfg = Release|Any CPU
+		{D30D85A9-CAD0-4173-971C-F389FA56B7C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D30D85A9-CAD0-4173-971C-F389FA56B7C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D30D85A9-CAD0-4173-971C-F389FA56B7C9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D30D85A9-CAD0-4173-971C-F389FA56B7C9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{523464A5-63BB-4A83-A0C0-109CB4DEEA97}.Debug|.NET.ActiveCfg = Debug|Any CPU
+		{523464A5-63BB-4A83-A0C0-109CB4DEEA97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{523464A5-63BB-4A83-A0C0-109CB4DEEA97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{523464A5-63BB-4A83-A0C0-109CB4DEEA97}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{523464A5-63BB-4A83-A0C0-109CB4DEEA97}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{523464A5-63BB-4A83-A0C0-109CB4DEEA97}.Release|.NET.ActiveCfg = Release|Any CPU
+		{523464A5-63BB-4A83-A0C0-109CB4DEEA97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{523464A5-63BB-4A83-A0C0-109CB4DEEA97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{523464A5-63BB-4A83-A0C0-109CB4DEEA97}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{523464A5-63BB-4A83-A0C0-109CB4DEEA97}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

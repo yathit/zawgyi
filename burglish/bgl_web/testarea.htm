@@ -1,0 +1,31 @@
+﻿<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Burglish Test Engine</title>
+<link rel="stylesheet" href="css/lib.css" type="text/css">
+<link rel="stylesheet" href="css/hash.css" type="text/css">
+<script>
+function onLoad(){
+	initTextarea({id: "testarea", toburmese : true, self:true , bbcode:false, rows:10});
+	$("divtag").innerHTML = "Burglish v" + burglish_version;
+}
+</script>
+</head>
+
+<body onload='loadjs("lib,burglish,burmese,syllable",onLoad)'>
+<noscript><div style="z-index:99999;color:#ffffff;background-color:#ff0000;position:absolute;top:0;left:0;width:100%;text-align: center;vertical-align:middle;">You really, really need to enable JavaScript to view this page. You know, it's written in JavaScript. And it will make your life much easier, but it's up to you.</div></noscript>
+<br>
+<center>
+<div>
+	<div id="divtag"><burglish_font color=red>If your browser support Burglish System, This message should Disappear after its load.</burglish_font></div>
+	<textarea id="testarea" style="width:90%;height:200;border:#000 dotted 1px;padding:0;margin:0;burglish_font:13px/1.6em Zawgyi-One,Arial,Sans-Serif;overflow:auto;"></textarea>
+</div>
+</center>
+
+
+<center><br><a href="http://www.burglish.com">2007 @ Burglish.com</a><br><a href="http://www.mmgeeks.org">2007 @ MMGeeks.org</a><br><br><burglish_font size=-2><a href="http://code.google.com/p/burglish/issues/list">Improve This system by putting Bugs/Issue list in Google Code</a></burglish_font></center>
+
+<script src="js/basic.js" type="text/javascript"></script>
+
+</body>
+</html>

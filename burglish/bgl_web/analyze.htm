@@ -1,0 +1,76 @@
+<html>
+<head>
+
+<title>Language Analyzer</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<link rel="stylesheet" href="css/lib.css" type="text/css" >
+<link rel="stylesheet" href="css/hash.css" type="text/css" >
+
+<script type="text/javascript">
+
+function getAnalyzed(){
+    var source = _id("sourceText");
+    var dest = _id("destText");
+
+    var srcData = source.value;
+    var destData = srcData.analyze( _id("source").value, _id("dest").value );
+
+    dest.value = destData;
+    return false;
+}
+
+function onLoad(){
+    changeFont(_id("source"), "Zawgyi_One");
+    changeFont(_id("dest"), "Zawgyi_One");
+}
+
+</script>
+</head>
+<body onload='loadjs("ajax,lib,int,burglish,burmese,language,translate",onLoad)'>
+<noscript><div style="z-index:99999;color:#ffffff;background-color:#ff0000;position:absolute;top:0;left:0;width:100%;text-align: center;vertical-align:middle;">You really, really need to enable JavaScript to view this page. You know, it's written in JavaScript. And it will make your life much easier, but it's up to you.</div></noscript>
+<h1>Language Analyzer </h1>
+<center><h3>:: Regular Expressions will change Language Barrier ::</h3></center>
+
+<form>
+<center>
+  <table width="90%">
+   <tr>
+      <td width="50%">
+         <select name="Choose Font" id="source" >
+          <!--option value="jp" >Japanese</option-->
+          <option value="Zawgyi_One" selected>Burmese(Myanmar)</option>
+        </select>
+      </td>
+      <td width="50%">
+         <select name="Choose Font" id="dest">
+          <!--option value="jp" >Japanese</option-->
+          <option value="Zawgyi_One" selected>Burmese(Myanmar)</option>
+        </select>
+      </td>
+   </tr>
+   <tr>
+      <td>
+        <div id="sourceArea"></div>
+      </td>
+      <td>
+        <div id="destArea"></div>
+      </td>
+   </tr>
+</table>
+<input type="button" onclick="return getAnalyzed();" value="Analyze >>" /><br>
+</center>
+</form>
+
+<div class="section" id="usages">
+<h2>Versions Info</h2>
+    0.1.0000 ( 5 Dec. 2006 )<br>
+    - Just Started<br>
+</div>
+
+<center><br><a href="http://www.burglish.com">2007 @ Burglish.com</a><br><a href="http://www.mmgeeks.org">2007 @ MMGeeks.org</a></center>
+
+<script src="js/basic.js" type="text/javascript"></script>
+
+</body>
+</html>

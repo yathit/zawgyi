@@ -1,0 +1,2 @@
+..\..\7z\7za a -t7z burglish.webfontconverter%1.7z ../AUTHORS ../../COPYING ../../LICENSE fontconv.htm css/lib.css css/hash.css js/basic.js js/lib.js js/ajax.js js/burmese.js js/burglish.js js/int.js js/language.js js/english.js -mx9
+for /f "tokens=1-5 delims=/ " %%d in ("%date%") do rename burglish.webfontconverter%1.7z burglish.webfontconverter.%%g%%e%%f.7z

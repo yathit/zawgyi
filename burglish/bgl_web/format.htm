@@ -1,0 +1,532 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>HTML Formatter</title>
+<link rel="stylesheet" href="css/lib.css" type="text/css" >
+<link rel="stylesheet" href="css/hash.css" type="text/css" >
+
+<script type="text/javascript">
+var _offset=13823;
+var vf={};
+var tmp2;
+var source;
+var dest = _id("destText");
+var resulttxt = _id("resulttxt");
+
+function testCall(){
+	var srcData = source.value;
+	var re = RegExp("\\b([A-Z]+)([a-z]+)\\b","g"); var tmp;var ret='';
+	while (tmp = re.exec(srcData)){
+		if( ( en_words.indexOf(','+tmp[0] +',')!=-1 || eval('/,'+tmp[0] +',/i').test(en_extras) ) && en_exceptions.indexOf(','+tmp[0] +',')==-1 ){
+			alert(tmp[0]);
+		}
+	}
+	//var tmp = srcData.split(/\b[\w]+\b/g).join(",");
+	
+	dest.value =ret;	
+	return false;
+}
+
+function parseENCall(){
+	var source = _id("sourceText").value;
+	_id("destText").value= source.parseENs();
+	return false;
+}
+
+function parseNECall(){
+	var source = _id("sourceText").value;
+	_id("destText").value= source.parseNEs();
+	return false;
+}
+
+function getCharCode(){
+	var source=_id("sourceText");
+	var dest=_id("destText");
+	var srcData=source.value;
+	var temp="";
+	for(var i=0;i < srcData.length;i++){
+		temp +="'"+srcData.charCodeAt(i)+"',";
+	};
+	dest.innerHTML=temp;
+	return false;
+}
+
+function getUnescaped(){
+	var source=_id("sourceText");
+	var dest=_id("destText");
+	var srcData=source.value;
+	dest.value=unescape(srcData);
+	return false;
+}
+
+function uniqueConvert(){
+	var source=_id("sourceText");
+	var dest=_id("destText");
+	var srcData=source.value;
+	dest.value=srcData.bac().cab();
+	return false;
+}
+
+function unknownASCCall(){
+	var source=_id("sourceText");
+	var srcfont = _id("source").value.replace(/[\ \-]/,"_");
+	var tmp=source.value.bsplit();
+	var ret='';
+	for(var i=0;i<tmp.length;i++){
+		if(_vf.f[tmp[i]]) {
+			ret+=tmp[i]; 
+			continue;
+		}
+		
+		var ascii = tmp[i].convertFont(srcfont,"WinInnwa");
+		var t1 = tmp[i].split(""); var enflag=true;
+		while(t1.length>1 && /[\w\.]+/.test(ascii) ){
+			if(_vf.f[tmp[i]]){
+				enflag=false;break;
+			}
+			t1.splice(t1.length-1);
+		}
+		if(enflag){
+			ret+=tmp[i].convertFont(_id("source").value.replace(/[\ \-]/,"_"),"WinInnwa");
+		}else{
+			ret+=tmp[i];
+		}
+	}
+	_id("destText").value=ret;
+	return false;
+}
+
+function convert(){
+	var source=_id("sourceText").value;
+	_id("destText").value=source.convertFont(font["source"].name,font["dest"].name);
+	return false;
+}
+
+function vfgen(){
+	var srcData = source.value;
+
+	var tmp =srcData.bac().cab().bnormalize().split(/\n+/);
+	var html=""; html2="";
+	for( var i = 0 ; i < tmp.length; i++){
+		if(tmp[i].length==0) continue;
+		if(tmp[i].charCodeAt(0)<33) continue;
+		var _word = tmp[i].bsplit();
+		html2 +=_word.join(",")+"\n";
+		if(!vf[_word[0]]){
+			vf[_word[0]] = _offset++;
+			html+="\\u"+_offset.toString(16)+ ","+_word[0].length+","+_word[0]+ "," + (i<tmp.length-1?"\n":"");	
+			//html+= _word[0]+(i<tmp.length-1?",":"");
+		}
+	}
+
+	_id("resulttxt").value += html;
+	_id("destText").value = html2;
+	return false;
+}
+
+function parseVFCall(){
+	var srcData = source.value;
+
+	var destData = srcData.bac().cab().bnormalize().parseVF();
+		
+	_id("destText").value = destData;
+	return false;
+}
+
+function parseFVCall(){
+	var srcData = source.value;
+
+	var destData = srcData.parseFV().bac();
+	_id("destText").value = destData;
+}
+
+function sortCall(){
+
+	var srcData = source.value;
+
+	var destData = srcData.split("\n").sort().join("\n");
+	_id("destText").innerHTML = destData;
+}
+
+function pnormalizeCall(){
+	var srcData = source.value;
+	
+	var destData = srcData.bac().cab().bnormalize().bsplit().join(",");
+
+	dest.value = destData;
+	return false;
+}
+
+function wbreakCall(){
+	var srcData = source.value;
+	
+	var destData = srcData.bac().cab().bsplit().join(",");
+
+	dest.value = destData;
+	return false;
+}
+
+function vfsortCall(){
+	var srcData = source.value;
+	var destData = srcData.bac().cab().bnormalize().parseVF().split("\n").sort().join("\n");
+	destData = destData.parseFV().bac();
+	_id("destText").value = destData;
+}
+
+function reorderCall(){
+	var srcData = source.value;
+	var destData = srcData.reorder();
+	_id("destText").value = destData;
+}
+
+function qsortCall(){
+
+	var srcData = source.value;
+	if(font["source"].name!=font["dest"].name){
+			srcData = srcData.convertFont(font["source"].name,"Zawgyi_One");
+	}
+	var tmp = srcData.bArray().split("\n");
+	quickSort(tmp);
+	var destData = tmp.join("\n"); //quickSort(tmp).join("\n");
+
+	self.status = _id("source").value + " -> " + _id("dest").value;
+
+	if(font["source"].name!=font["dest"].name){
+		destData = destData.convertFont("Zawgyi_One",font["dest"].name);
+	}
+	dest.value = destData;
+}
+
+function valueGenCall(){
+	var srcData = source.value;
+
+	var tmp =srcData.split("\n");
+	var html="";
+	for( var i = 0 ; i < tmp.length; i++){
+		if(tmp[i]!="") html+='"'+tmp[i]+'":'+_gv(tmp[i]) + ',';
+	}
+	_id("resulttxt").innerHTML = html;
+}
+
+function escapeUniCall(){
+	var srcData = _id("sourceText").value;
+	_id("destText").value = escapeu(srcData);
+}
+
+function unEscapeUniCall(){
+	var srcData = _id("sourceText").value;
+	_id("destText").value = unescapeu(srcData);
+}
+
+function burglishSylalbleFinderCall(){
+	b2bc();
+	var _burg={}; var html='';
+	for(var i=0;i<_bc.length;i++){
+		if(_bc[i][0].length>2 && !_burg[_bc[i][0]]){
+			_burg[_bc[i][0]] = _bc[i][1];
+			html+=_bc[i][0] +'\n';
+		}
+	}
+	resulttxt.value = html;
+}
+
+function syllableFinderCall(){
+	var srcData = source.value;
+	
+	var tmp = srcData.bac().cab().bnormalize().bsplit();
+	
+	var html="";var html2="";
+	for( var i = 0 ; i < tmp.length; i++){
+		if(tmp[i].length==0) continue;
+		var _word = tmp[i].bsplit();
+		html2 +=_word.join(",")+"\n";
+		for(var j=0; j < _word.length; j++){
+			if(_word[j].length==0) continue;
+			if(_word[j].charCodeAt(0)<1000) continue;
+			if(_word[j]=="၊" || _word[j]=="။") continue;
+			if(!vf[_word[j]]){
+				vf[_word[j]] = _offset++;
+				html+=_word[j]+ "\n";
+			}
+		}
+	}
+	
+	_id("resulttxt").innerHTML = html;
+	_id("destText").innerHTML = html2;
+}
+
+function grammerAnalyzerCall(){
+	bgramGen();
+	var srcData = _id("sourceText").value; var html='';
+	var tmp = bgramdetail(bgrams(srcData.bac().cab().bnormalize().parseVF())).parseFV().bac();
+	_id("destText").value = tmp;
+}
+
+function formatHTML(){
+	var ret=""; var re;
+	var src=_id("sourceText").value;
+
+	for(var i = 0 ; i < src.length; i++){
+		if(src.substr(i,8)=="function"){ ret+="\n"; };
+		if(src.substr(i-1,5)==";var "){ ret+="\n"; };
+		if(src.substr(i,7)=="<script"){ ret+="\n"; };
+		if(src.substr(i,6)=="<link "){ ret+="\n"; };
+		if(src.substr(i,4)=="for("){ ret+="\n"; };
+		if(src.substr(i-1,2)=="}}"){ ret+="\n"; };
+		if(src.substr(i-1,4)==";if("){ ret+="\n"; };
+		if(src.substr(i-1,4)=="}var"){ ret+="\n"; };
+		if(src.substr(i-1,4)==" var"){ ret+="\n"; };
+		if(src.substr(i-1,2)==";_"){ ret+="\n"; };
+		//html tags
+		if(src.substr(i,5)=="<head"){ ret+="\n"; };
+		if(src.substr(i,6)=="<meta "){ ret+="\n"; };
+		if(src.substr(i,5)=="<body"){ ret+="\n"; };
+		if(src.substr(i,5)=="<form"){ ret+="\n"; };
+		if(src.substr(i,4)=="<div"){ ret+="\n"; };
+		if(src.substr(i,7)=="<center"){ ret+="\n"; };
+		if(src.substr(i,6)=="<title"){ ret+="\n"; };
+		if(src.substr(i,4)=="<ul>"){ ret+="\n"; };
+		if(src.substr(i,4)=="<li>"){ ret+="\n"; };
+
+		ret += src.charAt(i);
+
+		if(src.substr(i,7)=="}return"){ ret+="\n"; };
+		if(src.substr(i,7)==";return"){ ret+="\n"; };
+		if(src.substr(i,7)=="{return"){ ret+="\n"; };
+		if(src.substr(i,5)==";case"){ ret+="\n"; };
+		if(src.substr(i,3)=="}if"){ ret+="\n"; };
+		if(src.substr(i,2)==";}"){ ret+="\n"; };
+		if(src.substr(i-1,2)=="){"){ ret+="\n"; };
+		if(src.substr(i-1,2)==");"){ ret+="\n"; };
+		if(src.substr(i-1,2)=="};"){ ret+="\n"; };
+		if(src.substr(i-2,3)=="++;"){ ret+="\n"; };
+		if(src.substr(i-4,5)=="else{"){ ret+="\n"; };
+	}
+
+	re = /\;(.*)\(/gi;
+	ret = ret.replace(re,";\n$1(");
+
+	re = /(><\/)/gi;
+	ret = ret.replace(re,">\n<\/");
+
+	re = /<br>/gi;
+	ret = ret.replace(re,"<br>\n");
+
+	re = /\nfunction\(\)/gi;
+	ret = ret.replace(re,"function()");
+
+	re = /\n([\"\'])/gi;
+	ret = ret.replace(re,"$1");
+
+	re = /([\"\'])\n/gi;
+	ret = ret.replace(re,"$1");
+
+	re = /\n\n/gi;
+	ret = ret.replace(re,"\n");
+
+	var split = ret.split("\n");
+	tab =0;
+	tab2=0;
+	ret ="";
+	var isScript= false;
+	var isHTML = false;
+	for(var i = 0 ; i < split.length; i++){
+		if(split[i].indexOf('</scrip')==0) { isScript= false; tab=0; tab2=0; }
+		if(split[i].indexOf("</scrip")==0 && split[i-1].indexOf("<scrip")==0){ ret += split[i]; continue; }
+
+		if(isScript){
+			if( /^["<>']/.test(split[i]) ){ ret += split[i]; continue; }
+
+			if(split[i].indexOf("}")==0 && tab>0) tab--;
+
+			ret += getTab(tab,"\t") + split[i];
+
+			if(split[i].indexOf("function ")==0) tab = 1;
+			if(split[i].indexOf("if(")==0 && split[i].indexOf("){")>0) tab++;
+			if(split[i].indexOf("for(")==0 && split[i].indexOf("){")>0) tab++;
+			if(split[i].indexOf("}else")==0) tab++;
+			if(split[i].indexOf("try{")==0) tab++;
+			if(split[i].indexOf("}catch")==0) tab++;
+			if(split[i].indexOf("while(")==0) tab++;
+			if(split[i].indexOf("switch(")==0) tab++;
+			if(split[i].indexOf("finally{")==0) tab++;
+
+			if(split[i].indexOf("function(){")!=-1) tab++;
+		}
+
+		if(split[i].indexOf("</")==0 && tab2>0) tab2--;
+
+		if(!isScript){
+			ret += getTab(tab2,"\t") + split[i];
+		}
+		if(split[i].indexOf("<form")==0 ) tab2++;
+		if(split[i].indexOf("<div")==0 ) tab2++;
+		if(split[i].indexOf("<center")==0 ) tab2++;
+
+		if(split[i].indexOf("<script")==0 || split[i].indexOf("function ")==0) isScript= true;
+	}
+
+	_id("destText").value=ret;return false;
+}
+
+function compactHTML(){
+	var ret=""; var re;
+	var $tmp =_id("sourceText").value;
+	var $lines = $tmp.split("\n");
+	$tmp = "";
+    for(var i1=0;i1<$lines.length;i1++) {
+        $lines[i1] = $lines[i1].replace(/([^:])\/\/.*$/g, '$1');
+        $lines[i1] = $lines[i1].replace(/^\/\/.*$/g, ' ');
+        $tmp += $lines[i1];
+    }
+    
+    $tmp = $tmp.replace(/(\/\*[\s\S]*?[ \t\n\r]*\*\/)/g, '');
+    
+    $tmp = $tmp.replace(/\t/g,'');
+    $tmp = $tmp.replace(/\s\s+/g,'');
+    $tmp = $tmp.replace(/\n/g,'');
+    $tmp = $tmp.replace(/; ;/g,";");
+
+    $tmp = $tmp.replace(/> </g,'><'); 
+    $tmp = $tmp.replace(/ =/g,'=');
+    $tmp = $tmp.replace(/= /g,'=');
+    
+    $tmp = $tmp.replace(/ }/g,'}');
+    $tmp = $tmp.replace(/} /g,'}');
+    $tmp = $tmp.replace(/ {/g,'{');
+    $tmp = $tmp.replace(/{ /g,'{');
+    
+    $tmp = $tmp.replace(/  /g,' ');
+    $tmp = $tmp.replace(/ \+ /g,'+');
+    
+    $tmp = $tmp.replace(/\, /g,","); 
+    $tmp = $tmp.replace(/ \,/g,",");
+     
+    $tmp = $tmp.replace(/; /g,";"); 
+    $tmp = $tmp.replace(/ ;/g,";");
+     
+    //$tmp = $tmp.replace(/ \)/g,')');
+    //$tmp = $tmp.replace(/\) /g,')');
+    
+    //$tmp = $tmp.replace(/ \(/g,'(');
+    //$tmp = $tmp.replace(/\( /g,'(');
+    
+    $tmp = $tmp.replace(/<![\s\S]*?--[ \t\n\r]*>/g, ''); 
+
+	_id("destText").value=$tmp;
+	return false;
+}
+
+function evalText(){
+	eval(_id("evaltxt").value);
+}
+
+function onLoad(){
+	_id('sourcetag').innerHTML=getFontList("source");
+	_id('desttag').innerHTML = getFontList("dest");
+	
+	changeFont(_id("source"), "Zawgyi-One",'onmouseup="onMMove()"');
+	changeFont(_id("dest"), "Zawgyi-One");	
+	
+	source = _id("sourceText");
+	dest = _id("destText");
+	resulttxt = _id("resulttxt");
+}
+
+function onMMove(){
+	_id("destText").scrollTop = _id("sourceText").scrollTop * ( _id("sourceText").scrollHeight / _id("sourceText").scrollHeight );
+};
+
+if (window.addEventListener) window.addEventListener('DOMMouseScroll', onMMove, true);
+window.onmousewheel = document.onmousewheel = onMMove;
+
+</script>
+</head>
+<body onload='loadjs("ajax lib int burglish burmese language english",onLoad)'>
+<noscript><div style="z-index:99999;color:#ffffff;background-color:#ff0000;position:absolute;top:0;left:0;width:100%;text-align: center;vertical-align:middle;">You really, really need to enable JavaScript to view this page. You know, it's written in JavaScript. And it will make your life much easier, but it's up to you.</div></noscript>
+<h1>::HTML Formatter / Javascript Evaluator::</h1>
+<form>
+<center>
+<table width="90%">
+<tr><td width="50%"><div id="sourcetag"></div></td>
+<td width="50%"><div id="desttag"></div></td></tr>
+<tr>
+<td>
+	<div id="sourceArea"><textarea id='sourceText'>
+ကြ်န္ေတာ္သည္ေမာင္ေမာင္ျဖစ္သည္။
+ေမာင္ေမာင္သည္ ေဘာလံုးကိုကန္သည္။
+ေမာင္ေမာင္ပါ။
+ေမာင္ေမာင္ပါခင္ဗ်ာ။
+</textarea></div>
+</td>
+<td>
+	<div id="destArea"></div>
+</td>
+</tr>
+</table>
+<input type="button" onclick="return convert();" value="Font Converter" />&nbsp;
+<input type="button" onclick="return uniqueConvert();" value="uniqueConvert" />&nbsp;
+<input type="button" onclick="return unknownASCCall();" value="Unknown Words to Ascii Back" />&nbsp;
+<input type="button" onclick="return parseENCall();" value="Parse English Words" />&nbsp;
+<input type="button" onclick="return parseNECall();" value="DeParse English Words" />&nbsp;<br>
+<input type="button" onclick="return formatHTML();" value="HTML Formatter" />&nbsp;
+<input type="button" onclick="return compactHTML();" value="HTML Compactor" />&nbsp;<br>
+<input type="button" onclick="return wbreakCall();" value="Word Breaker" />&nbsp;
+<input type="button" onclick="return pnormalizeCall();" value="Patsints Normalizer" />&nbsp;
+<input type="button" onclick="return reorderCall();" value="Word Reorder" />&nbsp;<br/>
+<input type="button" onclick="return vfgen();" value="Virtual Font Map Generator" />&nbsp;
+<input type="button" onclick="return parseVFCall();" value="Parse Virtual Font" />&nbsp;
+<input type="button" onclick="return parseFVCall();" value="De-Parse Virtual Font" />&nbsp;<br>
+<input type="button" onclick="return sortCall();" value="Normal Sort" />&nbsp;
+<input type="button" onclick="return qsortCall();" value="Quick Sort" />&nbsp;
+<input type="button" onclick="return vfsortCall();" value="Sort with Virtual Font" />&nbsp;
+<input type="button" onclick="return valueGenCall();" value="Syllable Value Gen" />&nbsp;
+<input type="button" onclick="return escapeUniCall();" value="Escape Unicode" />&nbsp;
+<input type="button" onclick="return unEscapeUniCall();" value="Unescape Unicode" />&nbsp;<br>
+<input type="button" onclick="return syllableFinderCall();" value="Syllable Finder" />&nbsp;
+<input type="button" onclick="return burglishSylalbleFinderCall();" value="Burglish Syllable Finder" />&nbsp;
+<input type="button" onclick="return grammerAnalyzerCall();" value="Grammer Analyzer" />&nbsp;
+<input type="button" onclick="return testCall();" value="Test" />&nbsp;
+<input type="button" onclick="return evalText();" value="Eval Text" />&nbsp;
+<br>
+
+<textarea id="evaltxt" rows="15" cols="80">
+		var srcData = source.value;
+	var ret="";
+var lines = srcData.split("\n");
+for(var i = 0; i< lines.length;i++){
+	var tmp = lines[i].split(/(\/)/g);
+if(tmp.length>2) {
+var v1 = tmp[0].trim().split(/[\ (,]/)[0].trim();
+var v2 = tmp[1].trim();
+var v3 = tmp[2].trim().split(/[\ (,]/)[0];
+var tmp2 = tmp[2].match(/([\u1000-\u1256].*)/g);
+//alert(tmp2);
+ret+=[v1 , "'"+v2 , v3, tmp2||""] + "\n";
+}else if(lines[i].length>3){
+var tmp = lines[i].split(/[\ ,]+([\u1000-\u1256].*)/g);
+if(tmp.length>2) {
+var tmp2=tmp[0].split(" ");
+ret+=[tmp2[0],",'"+tmp2[1],tmp[1], tmp[2]] + "\n";
+}else{
+ret+=tmp+ "\n";
+_id("resulttxt").value +=tmp+ "\n";
+}
+}else{
+ret+=tmp+ "\n";
+}
+	}
+
+	dest.value = ret.trim();
+
+</textarea>
+
+<textarea id="resulttxt" rows="15" cols="50"></textarea><br>
+
+</center>
+</form>
+
+<script src="js/basic.js" type="text/javascript"></script>
+
+</body>
+</html>

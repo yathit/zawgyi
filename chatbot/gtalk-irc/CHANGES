@@ -1,0 +1,30 @@
+Gtalk-IRC bot
+Version 1.0
+27-June-2008
+
+Acknowledgements
+================
+
+This Gtalk to IRC bridging bot is a customized version of Gtalk conference bot by Perry Lorier. (http://coders.meta.net.nz/~perry/jabber/confbot.php)
+The IRC part is written by Aung Kyaw Htet. (http://www.mmgeeks.org)
+This distribution also inherits GPL as adopted by the original confbot.
+
+For Users
+=========
+Change the variables at the top of irc.py according to your server and channel information.
+After that just run confbot.py as usual.
+
+For Developers
+==============
+
+irc.py is the main module responsible for sending and receiving messages from the IRC server.
+Also some changes has been made to confbot.py to call the functions in irc.py.
+These changes have been commented in confbot.py
+
+Feedback
+========
+
+Feedbacks and questions to Myanmar Geeks Forum (http://www.mmgeeks.org)
+The specific thread for this bot is at
+http://www.mmgeeks.org/forum/viewtopic.php?f=41&t=805
+

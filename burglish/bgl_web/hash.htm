@@ -1,0 +1,141 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Burglish Hash</title>
+<style>
+div.burmese{
+	font:13px/1.6em Zawgyi-One,Arial,Verdana,Sans-Serif;
+}
+</style>
+<link rel="stylesheet" href="css/lib.css" type="text/css" >
+<link rel="stylesheet" href="css/hash.css" type="text/css" >
+<script src="js/lib.js" type="text/javascript"></script>
+<script src="js/ajax.js" type="text/javascript"></script>
+<script src="js/burglish.js" type="text/javascript"></script>
+<script src="js/burmese.js" type="text/javascript"></script>
+<script type="text/javascript">
+function onSubmit() {
+	var params = new Object();
+	params["burglish"] = _id("burglish").value;
+	params["burmese"] = _id("burmese").value;
+	params["wordtype"] = _id("wordtype").value;
+	if( params["burglish"] != null && params["burmese"] !=null ){
+		SendAjax( 1 , params, onData, "", "hash.php" );
+	}
+	return false;
+}
+
+function onDelete(g,m) {
+	var params = new Object();
+	params["burglish"] = g?g:_id("burglish").value;
+	params["burmese"] = m?m:_id("burmese").value;
+	if( !params["burglish"] ) return;
+	SendAjax( 2 , params, onData, "", "hash.php" );
+	return false;
+}
+
+function onData(_res, result, _dat, params){
+	if(_res == "OK"){
+		hashloading = false;
+		hashdata = _dat.data;
+		shContent();
+	}
+};
+var hashdata=[];
+hashloading=false;
+var hashTimerID=0;
+var hashAjax;
+function onHashTimer(){
+	if(!hashloading){
+		hashloading=true;
+		var params=new Object();
+		params["noheader"]=true;
+		SendAjax(5,params,onData,"","data/hashdata.txt",hashAjax);
+	}
+};
+onHashTimer();
+
+
+function shContent () {
+	var html = "";
+	var counter = 0;
+	if(_id("resultAll").innerHTML!="") return;
+	for( var item in hashdata ) {
+		var hasharray = hashdata[ item ];
+		if( hasharray.length == 0 ) continue;
+		for( var i = 0 ; i < hasharray.length; i++ ) {
+			html = '["'+hasharray[i][0] + '","' + hasharray[i][1] + '","' + (hasharray[i][2]? hasharray[i][2]:'') + '","' + (hasharray[i][3]?hasharray[i][3]:'')+ '"]'+ ' <!--input type="button" onclick=\'onDelete("' + hasharray[i][0] + '","' + hasharray[i][1] + '")\' value="Delete this" /--><br>' + html;
+			counter++;
+		}
+		//html = "<p> " + item + "<\/p>" + html;
+	}
+	html = html + "<br>---- Total Word ---- = "+counter;
+	if( html ){
+		_id("resultAll").innerHTML = html;
+		//dataQuery ( _id("burglish"), true);
+		//_id("burglish").focus();
+	}
+};
+
+var loadTimerID = 0;
+function onLoad(){
+	clearTimeout(loadTimerID);
+	if(!isDef("ajaxloaded") || !isDef("burglishloaded") || !isDef("libloaded") ){
+		loadTimerID = setTimeout("onLoad()", 500);
+		return false;
+	}else{
+		init();
+		shContent();
+	}
+}
+
+function init(){
+	//initTextarea( { tag: "burglishtag" , id: "burglish", className: "textbox", multiline : false } );
+	//initTextarea( { tag: "burmesetag" , id: "burmese", className: "textbox", multiline : false, isBurmese : true } );
+	initTextarea( { id: "testarea", className: "testarea", toburmese : true, self:true , rows:10} );
+	//initTextarea( { id: "attachTest1" , multiline : true, toburmese : true, self:true , rows:4} );
+	//initTextarea( { id: "attachTest2" , multiline : true, toburmese : true, self:true , rows:4} );
+	//initTextarea( { id: "attachTest3" , multiline : true, toburmese : true, self:true , rows:4} );
+	//_id("burglish").focus();
+};
+
+</script>
+</head>
+
+<body onload="onLoad()">
+<noscript><div style="z-index:99999;color:#ffffff;background-color:#ff0000;position:absolute;top:0;left:0;width:100%;text-align: center;vertical-align:middle;">You really, really need to enable JavaScript to view this page. You know, it's written in JavaScript. And it will make your life much easier, but it's up to you.</div></noscript>
+<br>
+<center>
+<div id="container">
+
+<table width="100%"><tr><td width="30%">
+<tr>
+	<td>
+		<div id="resultAll" class="burmese"></div>
+	</td>
+	<td valign="top" width="40%">
+		Burglish : <span id="burglishtag"></span><br>
+		Burmese : <span id="burmesetag"></span><br>
+		Word Type : <input type="text" id="wordtype" /> <br>
+
+		<input type="submit" value="Add New/Update" class="button" onclick="return onSubmit();">
+		<input type="button" value="Delete" onclick="onDelete()" class="button">
+
+		<input type="hidden" name="mode" id="mode" value="1">
+		<span id="testareatag"></span>
+		<textarea id="testarea" cols="60" rows="10"></textarea>
+	</td>
+	<td valign="top" width="30%">
+		<div id="result" class="burmese"> </div>
+		<textarea id="attachTest1"></textarea>
+		<textarea id="attachTest2"></textarea>
+		<textarea id="attachTest3"></textarea>
+	</td>
+</tr>
+</table>
+
+</div>
+</center>
+
+</body>
+</html>

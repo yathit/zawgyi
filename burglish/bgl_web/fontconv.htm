@@ -1,0 +1,126 @@
+<html>
+<head>
+<title>Burmese Font Converter</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+<link rel="stylesheet" href="css/lib.css" type="text/css" >
+<link rel="stylesheet" href="css/hash.css" type="text/css" >
+
+<script type="text/javascript">
+
+function getCharCode(){
+	var source=$("sourceText");
+	var srcData=source.value;
+	var temp="";
+	for(var i=0;i < srcData.length;i++){
+		var code = srcData.charCodeAt(i);
+		if(code==10){
+			temp+="\n";
+		}else{
+			temp +="'"+srcData.charCodeAt(i)+"',";
+		}
+	};
+	$("destText").value=temp;
+}
+
+function getUnescaped(){
+	var source=$("sourceText");
+	var dest=$("destText");
+	var srcData=source.value;
+	dest.value=unescape(srcData);
+}
+
+function getEscapeU(){
+	var source=$("sourceText");
+	var dest=$("destText");
+	var srcData=source.value;
+	dest.value=unescapeuc(escapeu(srcData));
+}
+
+
+function convert(){
+	var source=$("sourceText").value;
+	self.status = burglish_font["source"].name + " -> " + burglish_font["dest"].name;
+	//if(burglish_font["source"].name=="Zawgyi_One") source = source.bac();
+	var _dest=source.convertFont(burglish_font["source"].name,burglish_font["dest"].name);
+	//if(burglish_font["dest"].name=="Zawgyi_One") _dest = _dest.bac();
+	$("destText").value=_dest;
+}
+
+function convertBeta(){
+	loadingbar(true, "convertBetacb");
+}
+
+function convertBetacb(){
+	if( $("force").value!=en_force) en_force = $("force").value;
+	if( $("exceptions").value!=en_exceptions) en_exceptions = $("exceptions").value;
+
+	var source=$("sourceText").value;
+	self.status = burglish_font["source"].name + " -> " + burglish_font["dest"].name;
+	//if(burglish_font["source"].name=="Zawgyi_One") source = source.bac();
+	var tmp=source;
+	if( !_f[burglish_font["source"].name].unicode ){
+		tmp = tmp.parseENs();
+	}
+	tmp=tmp.convertFont(burglish_font["source"].name,burglish_font["dest"].name);
+	if( !_f[burglish_font["source"].name].unicode ){
+		tmp = tmp.parseNEs();
+	}
+	tmp = tmp.bac();
+	//if(burglish_font["dest"].name=="Zawgyi_One") _dest = _dest.bac();
+	$("destText").value=tmp;
+	loadingbar(false); 
+}
+
+function onLoad(){
+	$('sourcetag').innerHTML=getFontList("source");
+	$('desttag').innerHTML = getFontList("dest");
+
+	//changeFont($("source"), "WinInnwa"); changeFont($("dest"), "Zawgyi-One");
+	changeFont($("source"), "Zawgyi-One"); changeFont($("dest"), "Myanmar3");
+
+	$("exceptions").value = en_exceptions;
+	$("force").value = en_force;
+	
+	if(!_except1["test"]) loadEnInCacheCall();
+}
+
+function loadEnInCacheCall(){
+	loadingbar(true,"loadEnInCache");
+}
+
+</script>
+</head>
+<body onload='loadjs("ajax lib int burmese burglish english language",onLoad)'>
+<noscript><div style="z-index:99999;color:#ffffff;background-color:#ff0000;position:absolute;top:0;left:0;width:100%;text-align: center;vertical-align:middle;">You really, really need to enable JavaScript to view this page. You know, it's written in JavaScript. And it will make your life much easier, but it's up to you.</div></noscript>
+<h1>::Burmese Font Converter::</h1>
+<center>
+<table width="90%">
+<tr><td width="50%"><div id="sourcetag"></div></td>
+<td width="50%"><div id="desttag"></div></td></tr>
+<tr><td>	<div id="sourceArea"></div></td><td>	<div id="destArea"></div></td></tr>
+</table>
+<input type="button" onclick="return convert();" value="Convert ->" />
+<input type="button" onclick="return convertBeta();" value="Convert Beta->" />
+<input type="button" onclick="return getCharCode();" value="Char Code->" />
+<input type="button" onclick="return getEscapeU();" value="Escape Unicode->" />
+<br><br>
+Exception list not to convert (seperated by commas), case ignore
+<textarea id="exceptions" style="width:90%"></textarea><br><br>
+Force convert list (seperated by commas), case sensitive
+<textarea id="force" style="width:90%"></textarea><br><br>
+and there is <b>60000+</b> pre added English words from Firefox dictionary.<br> and <b>18000+</b> Burglish datas with Burglizer<br> and if you know more, pls send your word filtering list by email to (burglish at gmail dot com)<br>
+ Please Download Latest Dictionary from <a href="http://code.google.com/p/burglish/downloads/list">http://code.google.com/p/burglish/downloads/list</a><br>
+ Find Latest Word Filtering List(English.js) for FontConv.htm <br>
+</center>
+<div class="section" id="usages">
+	<b>Versions Info</b><br>v1.9.1#080107<br>- Zawgyi to Myanmar3 Converter almost 99% convertible now.<br><br>v1.9.0#080106<br>- Added filtering feature, english words filter list.<br>- Added Burglish words filter list.<br>- Added custom filter list and force convert list.<br>- some bugs fixed<br><br>v1.0.0#071231<br>- Kannaka burglish_font, burglish_font file itself is unknown but its used in En-MM Dictionary, just parse it with reverse engineering :)<br>- some bugs fixed<br><br>v0.9.0.0.071124<br>- Wwin_Burmese support added.<br>- Some html codes changed<br><br>v0.8.0.0.070923<br>- Zawgyi to Myanmar3 Unicode Advance converting engine added (only one way)<br>- Some bugs fixed/ Some codes, logic changed<br><br>v0.7.5.0.070907<br>- Font Autocorrecting Added<br>- Some bugs fixed<br><br>v0.7.0.0.070905 (5 Sept. 2007)<br>- Fonts types --> UniBurma_SansSerif added<br><br>v0.6.1000(2 Dec. 2006)<br>- Fonts types --> MS-HEAVY,MS-MOOM added<br>- Some bugs fixes<br>- Faster converting then previous versions<br>- You can convert very big texts now. I have tested with 1MB of Text,its work!<br><br>v0.6.0000(1 Dec. 2006)<br>- Main Engine Updated!,More concise converting for patsint(Overlapping)characters are possible now.<br>- updating database for patsint(Overlapping)characters.<br><br>v0.5.5000(30 Nov. 2006)<br>- Fonts types --> M-Myanmar1 Font for Myanmar Enclyopedia added<br><br>v0.5.0000(11 Nov. 2006)<br>- Fonts types --> CE Fonts,Gandamar Fonts,King Fonts,Metrix Fonts,Academy Fonts,Myazedi Font(Partial)added<br><br>v0.1.0000(30 Oct. 2006)<br>- Start of this Project<br>- Support Zawgyi and WinInnwa Fonts<br>
+</div>
+
+<center><br><a href="http://www.burglish.com">2007 @ Burglish.com</a><br><a href="http://www.mmgeeks.org">2007 @ MMGeeks.org</a></center>
+
+<script src="js/basic.js" type="text/javascript"></script>
+
+</body>
+</html>

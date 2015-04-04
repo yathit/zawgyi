@@ -1,0 +1,11 @@
+content mmgeeksinput jar:chrome/mmgeeksinput.jar!/content/
+content mmgeeksinput jar:chrome/mmgeeksinput.jar!/content/ contentaccessible=yes
+
+overlay	chrome://navigator/content/navigator.xul	chrome://mmgeeksinput/content/mmgeeksinputOverlay.xul
+overlay	chrome://browser/content/browser.xul	chrome://mmgeeksinput/content/mmgeeksinputOverlay.xul
+
+locale mmgeeksinput en-US jar:chrome/mmgeeksinput.jar!/locale/en-US/
+
+skin mmgeeksinput classic/1.0 jar:chrome/mmgeeksinput.jar!/skin/
+
+

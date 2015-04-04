@@ -1,0 +1,60 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<head>
+<script>
+
+/* I will use "aTx_" prefix for all variable, 
+ * because this script will inject into any pages, 
+ * variable duplication is not allowed 
+ */
+
+function aTx_C1(aTx_s, aTx_v){
+	var aTx_r=aTx_s;
+	switch (aTx_v){
+		case "251": // dummy here for now, zawgyi to unicode 5.1
+			aTx_r = aTx_r.replace(/ေအာင္ကို/,'<font face="Myanmar3">' + 'အောင်ကို' + '<\/font>');
+			break;
+		case "2z": // dummy here for now, unicode 5.1 to zawgyi
+			aTx_r = aTx_r.replace(/အောင်ကို/,'<font face="Zawgyi-One">' + 'ေအာင္ကို' + '<\/font>');
+			break;
+		default:
+			break;
+	}
+	return aTx_r;
+}
+
+function aTx_E(aTx_v){
+	var aTx_a=document.body.innerHTML; var aTx_z='';
+	var aTx_b=aTx_a.split(/([\u1000-\u109F]+)/);
+	if(/MSIE/.test(navigator.userAgent)){
+		var aTx_bie=aTx_a.split(/[^\u1000-\u109F]+/);
+		aTx_z+=aTx_b[0];
+		for (var aTx_i=0; aTx_i<aTx_bie.length; aTx_i++){
+			aTx_z+=aTx_C1(aTx_bie[aTx_i], aTx_v) + aTx_b[aTx_i+1];
+		}
+	}else{
+		for (var aTx_i=0; aTx_i<aTx_b.length; aTx_i++){
+			aTx_z+=aTx_i%2?aTx_C1(aTx_b[aTx_i],aTx_v):aTx_b[aTx_i];
+		}
+	}
+	document.body.innerHTML = aTx_z;
+	return false;
+}
+
+</script>
+</head>
+<body>
+	<div>
+		အောင်ကို
+	</div>
+	<font face="Myanmar3">
+		အောင်ကို
+	</font>
+	<br>
+	<select onchange="return aTx_E(this.value);">
+		<option selected> - </option>
+		<option value="251">to Unicode 5.1</option>
+		<option value="2z">to Zawgyi</option>
+	</select>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
+         xmlns:NC="http://home.netscape.com/NC-rdf#"
+         xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+  <RDF:Description RDF:about="rdf:#$gXGS1"
+                   em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+                   em:minVersion="1.5"
+                   em:maxVersion="3.0.*" />
+  <RDF:Description RDF:about="urn:mozilla:install-manifest"
+                   em:id="mmgeeksinput@mmgeeks.org"
+                   em:name="Burmese Input System"
+                   em:version="0.1.2"
+                   em:creator="Thet Twe"
+                   em:description="Write Burmese with Burmese Input System Mozilla Add-On"
+                   em:homepageURL="http://www.mmgeeks.org"
+                   em:iconURL="chrome://mmgeeksinput/skin/mmgeeksinput_icon.png">
+    <em:targetApplication RDF:resource="rdf:#$gXGS1"/>
+    <em:file RDF:resource="urn:mozilla:extension:file:mmgeeksinput.jar"/>
+  </RDF:Description>
+  <RDF:Description RDF:about="urn:mozilla:extension:file:mmgeeksinput.jar"
+                   em:package="content/"
+                   em:skin="skin/"
+                   em:locale="locale/en-US/" />
+</RDF:RDF>
